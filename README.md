@@ -1,6 +1,13 @@
 <div align="center">
 
-  <img src="https://capsule-render.vercel.app/render?type=waving&color=auto&height=220&section=header&text=APEX%20GT&fontSize=80&fontAlignY=35&animation=twinkling&desc=Multi-Brand%20Interactive%203D%20Hypercar%20Configurator&descAlignY=62&descScale=20" width="100%" alt="APEX GT Banner"/>
+  <div align="center">
+
+```ascii
+     _    ____  _______  __  ____ _____ 
+    / \  |  _ \| ____\ \/ / / ___|_   _|
+   / _ \ | |_) |  _|  \  / | |  _  | |  
+  / ___ \|  __/| |___ /  \ | |_| | | |  
+ /_/   \_\_|   |_____/_/\_\ \____| |_|
 
   <br/>
 

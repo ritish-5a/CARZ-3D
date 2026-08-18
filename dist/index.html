@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>APEX GT // S. RITISH Bespoke 3D Hypercar Configurator</title>
+  <meta name="description" content="Rotate and configure a realistic 3D hypercar in real-time. Designed by S. RITISH. Customize PBR paint finishes, forged alloy wheels, interior materials, test laser headlights and animated dihedral scissor doors." />
+  <meta name="author" content="S. RITISH" />
+  <script type="module" crossorigin src="/assets/index-C5FlmEV8.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-D2AR1YW-.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 3D WebGL Canvas Container -->
+    <div id="canvas-container"></div>
+
+    <!-- Top Navigation Header -->
+    <header class="top-header">
+      <div class="brand-badge">
+        <div class="brand-logo-icon">R</div>
+        <div class="brand-info">
+          <div class="brand-title">APEX GT <span class="brand-tag">S. RITISH</span></div>
+          <div class="brand-model">BESPOKE HYPERCAR STUDIO // BY S. RITISH</div>
+        </div>
+      </div>
+
+      <!-- Center Quick Camera Dock -->
+      <nav class="camera-dock" aria-label="Camera Presets">
+        <button class="cam-btn active" data-view="hero" title="3/4 Hero Exterior View">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          Hero
+        </button>
+        <button class="cam-btn" data-view="showcase" title="Cinematic 360° Drone Showcase">🎥 Drone 360°</button>
+        <button class="cam-btn" data-view="side" title="Aerodynamic Side Profile">Profile</button>
+        <button class="cam-btn" data-view="cockpit" title="Driver POV Cockpit Interior">Cockpit</button>
+        <button class="cam-btn" data-view="wheel" title="Wheel & Brembo Caliper Inspection">Wheels</button>
+        <button class="cam-btn" data-view="rear" title="Rear Diffuser & Aero Wing">Rear</button>
+        <button class="cam-btn" data-view="top" title="Top-Down Aero Overview">Aero Top</button>
+      </nav>
+
+      <!-- Top Right Action Controls -->
+      <div class="top-actions">
+        <button class="icon-btn currency-btn" id="currency-toggle-btn" title="Switch Currency (₹ INR / $ USD)" style="width: auto; padding: 0 14px; font-weight: 700; font-family: var(--font-mono); font-size: 12px; color: var(--accent-gold);">
+          ₹ INR
+        </button>
+
+        <div class="badge-price">
+          <span class="badge-price-label">EST. PRICE</span>
+          <span class="badge-price-val" id="price-val-badge">₹ 49.75 Lakh</span>
+        </div>
+
+        <button class="icon-btn active" id="sound-toggle-btn" title="Toggle Engine Audio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </button>
+
+        <button class="icon-btn" id="open-photo-studio-btn" title="4K Photo Studio">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+
+        <button class="icon-btn" id="open-summary-btn" title="Build Summary & Specs">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Bottom Left HUD: Engine Throttle & Digital Tachometer -->
+    <div class="engine-hud">
+      <div class="tachometer-card">
+        <div class="tacho-header">
+          <span class="tacho-title">ENGINE HUD // S. RITISH</span>
+          <span class="tacho-gear">DYNAMIC</span>
+        </div>
+        <div class="tacho-dial-wrap">
+          <div>
+            <span class="tacho-rpm-num" id="tacho-rpm-val">750</span>
+            <span class="tacho-rpm-unit">RPM</span>
+          </div>
+          <div class="tacho-boost-wrap">
+            <span class="tacho-boost-label">BOOST</span>
+            <span class="tacho-boost-val" id="tacho-boost-val">+0.0 bar</span>
+          </div>
+        </div>
+        <div class="rpm-bar-bg">
+          <div class="rpm-bar-fill" id="rpm-fill-bar"></div>
+        </div>
+      </div>
+
+      <button class="pedal-btn" id="pedal-rev-btn" title="Click or Hold to Rev the Engine">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span>Hold to Rev Engine</span>
+      </button>
+    </div>
+
+    <!-- Bottom Center Quick Action Pill -->
+    <div class="quick-controls-dock">
+      <button class="quick-toggle-btn" id="quick-doors-btn" title="Open / Close Doors">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18"/></svg>
+        Doors
+      </button>
+      <button class="quick-toggle-btn" id="quick-hood-btn" title="Open / Close Engine Hood">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+        Hood
+      </button>
+      <button class="quick-toggle-btn accent-gold" id="quick-suspension-btn" title="Active Air Suspension (+180mm Lift / Drop)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/><polyline points="18 9 12 3 6 9"/></svg>
+        Air Suspension
+      </button>
+      <button class="quick-toggle-btn accent-cyan" id="quick-lights-btn" title="LED Projector Headlights">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+        Headlights
+      </button>
+      <button class="quick-toggle-btn accent-red" id="quick-hazard-btn" title="Emergency Hazard Flashers">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 22 22 22 12 2"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Hazards
+      </button>
+      <button class="quick-toggle-btn" id="quick-rotate-btn" title="Auto Studio Turntable Rotation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        Turntable
+      </button>
+    </div>
+
+    <!-- Main Right Configurator Drawer -->
+    <aside class="configurator-drawer" id="configurator-drawer">
+      <div class="drawer-header">
+        <div class="drawer-title-row">
+          <div class="drawer-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            S. Ritish Global Garage
+          </div>
+        </div>
+
+        <!-- Category Tabs -->
+        <div class="tab-nav">
+          <button class="tab-btn active" data-tab="garage">Garage</button>
+          <button class="tab-btn" data-tab="exterior">Paint</button>
+          <button class="tab-btn" data-tab="wheels">Wheels</button>
+          <button class="tab-btn" data-tab="interior">Interior</button>
+          <button class="tab-btn" data-tab="doors">Controls</button>
+          <button class="tab-btn" data-tab="studio">Studio</button>
+        </div>
+      </div>
+
+      <div class="drawer-body">
+        <!-- 0. GARAGE VEHICLE SELECTOR TAB -->
+        <div class="tab-pane" id="tab-garage" style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="section-block">
+            <div class="section-label">Select Brand & Vehicle</div>
+            <div class="card-grid">
+              <div class="card-select-item vehicle-card active" data-vehicle="toyota">
+                <div class="card-preview-thumb">🚙</div>
+                <div class="card-title">TOYOTA Fortuner</div>
+                <div class="card-desc">Legender 4x4 Luxury SUV</div>
+              </div>
+              <div class="card-select-item vehicle-card" data-vehicle="rolls_royce">
+                <div class="card-preview-thumb">👑</div>
+                <div class="card-title">ROLLS-ROYCE Spectre</div>
+                <div class="card-desc">Bespoke Grand Saloon</div>
+              </div>
+              <div class="card-select-item vehicle-card" data-vehicle="maruti">
+                <div class="card-preview-thumb">🚗</div>
+                <div class="card-title">MARUTI SUZUKI Swift</div>
+                <div class="card-desc">Sport Turbo Hatchback</div>
+              </div>
+              <div class="card-select-item vehicle-card" data-vehicle="mg">
+                <div class="card-preview-thumb">⚡</div>
+                <div class="card-title">MG Cyberster</div>
+                <div class="card-desc">Morris Garages EV Roadster</div>
+              </div>
+              <div class="card-select-item vehicle-card" data-vehicle="mahindra">
+                <div class="card-preview-thumb">⛰️</div>
+                <div class="card-title">MAHINDRA Thar 4x4</div>
+                <div class="card-desc">Rugged Trail Off-Roader</div>
+              </div>
+              <div class="card-select-item vehicle-card" data-vehicle="lamborghini">
+                <div class="card-preview-thumb">🏎️</div>
+                <div class="card-title">LAMBORGHINI Apex</div>
+                <div class="card-desc">Extreme Track Hypercar</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. EXTERIOR PAINT TAB -->
+        <div class="tab-pane" id="tab-exterior" style="display: none; flex-direction: column; gap: 20px;">
+          <!-- Paint Finish Types -->
+          <div class="section-block">
+            <div class="section-label">Paint Finish Type</div>
+            <div class="segmented-grid">
+              <button class="segment-btn finish-segment-btn" data-finish="gloss">
+                <span>Gloss</span>
+                <span class="btn-sub">Standard</span>
+              </button>
+              <button class="segment-btn finish-segment-btn active" data-finish="metallic">
+                <span>Metallic</span>
+                <span class="btn-sub">Flake</span>
+              </button>
+              <button class="segment-btn finish-segment-btn" data-finish="matte">
+                <span>Satin</span>
+                <span class="btn-sub">Matte</span>
+              </button>
+              <button class="segment-btn finish-segment-btn" data-finish="chameleon">
+                <span>Iridescent</span>
+                <span class="btn-sub">Chameleon</span>
+              </button>
+              <button class="segment-btn finish-segment-btn" data-finish="carbon">
+                <span>Carbon</span>
+                <span class="btn-sub">Forged</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Curated Supercar Palette -->
+          <div class="section-block">
+            <div class="section-label">
+              <span>Curated Colors</span>
+              <span class="section-value-tag">PBR Clearcoat</span>
+            </div>
+            <div class="swatch-grid">
+              <div class="swatch-item paint-swatch active" style="background: #ff334b;" data-color="#ff334b" data-name="Rosso Corsa Red" data-price="15000" title="Rosso Corsa Red"></div>
+              <div class="swatch-item paint-swatch" style="background: #00d2d3;" data-color="#00d2d3" data-name="Miami Teal Blue" data-price="18000" title="Miami Teal Blue"></div>
+              <div class="swatch-item paint-swatch" style="background: #e5a93b;" data-color="#e5a93b" data-name="Solar Flare Gold" data-price="22000" title="Solar Flare Gold"></div>
+              <div class="swatch-item paint-swatch" style="background: #7a1b8c;" data-color="#7a1b8c" data-name="Viola Parsifae Purple" data-price="26000" title="Viola Parsifae"></div>
+              <div class="swatch-item paint-swatch" style="background: #ff5722;" data-color="#ff5722" data-name="Sunset Papaya Orange" data-price="19000" title="Sunset Papaya Orange"></div>
+              <div class="swatch-item paint-swatch" style="background: #1b4332;" data-color="#1b4332" data-name="British Racing Green" data-price="21000" title="British Racing Green"></div>
+              <div class="swatch-item paint-swatch" style="background: #111418;" data-color="#111418" data-name="Stealth Satin Black" data-price="16000" title="Stealth Satin Black"></div>
+              <div class="swatch-item paint-swatch" style="background: #718096;" data-color="#718096" data-name="Grigio Silverstone" data-price="15000" title="Grigio Silverstone"></div>
+              <div class="swatch-item paint-swatch" style="background: #f8fafc;" data-color="#f8fafc" data-name="Monaco Pure White" data-price="14000" title="Monaco Pure White"></div>
+              <div class="swatch-item paint-swatch" style="background: #2563eb;" data-color="#2563eb" data-name="Le Mans Royal Blue" data-price="18000" title="Le Mans Royal Blue"></div>
+            </div>
+          </div>
+
+          <!-- Custom Color Picker -->
+          <div class="section-block">
+            <div class="section-label">Bespoke Color Code</div>
+            <div class="custom-color-row">
+              <div class="color-input-wrapper">
+                <input type="color" id="custom-paint-picker" value="#ff334b" />
+              </div>
+              <input type="text" id="custom-paint-hex" class="color-code-input" value="#FF334B" />
+            </div>
+          </div>
+
+          <!-- Clearcoat & Metalness Sliders -->
+          <div class="section-block">
+            <div class="section-label">Surface Optics</div>
+            <div class="slider-row">
+              <div class="slider-label-bar">
+                <span>Clearcoat Gloss</span>
+                <span class="section-value-tag">Ultra Glass</span>
+              </div>
+              <input type="range" id="slider-clearcoat" class="custom-range" min="0" max="1" step="0.05" value="1.0" />
+            </div>
+            <div class="slider-row" style="margin-top: 10px;">
+              <div class="slider-label-bar">
+                <span>Metallic Flake Density</span>
+                <span class="section-value-tag">Deep Sheen</span>
+              </div>
+              <input type="range" id="slider-metalness" class="custom-range" min="0" max="1" step="0.05" value="0.88" />
+            </div>
+          </div>
+
+          <!-- Window Glass Tint -->
+          <div class="section-block">
+            <div class="section-label">Windshield & Window Tint</div>
+            <div class="card-grid">
+              <div class="card-select-item tint-card active" data-tint="clear" data-name="Ultra-Clear Crystal" data-price="0">
+                <div class="card-title">Crystal Clear</div>
+                <div class="card-desc">92% Visible Light</div>
+              </div>
+              <div class="card-select-item tint-card" data-tint="smoke" data-name="Executive 35% Smoke" data-price="3500">
+                <div class="card-title">35% Smoke</div>
+                <div class="card-desc">Privacy Protection</div>
+              </div>
+              <div class="card-select-item tint-card" data-tint="limo" data-name="Dark Limo 5%" data-price="4500">
+                <div class="card-title">5% Limo Stealth</div>
+                <div class="card-desc">Maximum Tint</div>
+              </div>
+              <div class="card-select-item tint-card" data-tint="chameleon" data-name="Chameleon Solar Tint" data-price="6000">
+                <div class="card-title">Solar Chameleon</div>
+                <div class="card-desc">Gold UV Rejection</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. WHEELS & BRAKES TAB -->
+        <div class="tab-pane" id="tab-wheels" style="display: none; flex-direction: column; gap: 20px;">
+          <!-- 4 Wheel Rim Models -->
+          <div class="section-block">
+            <div class="section-label">Alloy Wheel Architecture</div>
+            <div class="card-grid">
+              <div class="card-select-item wheel-style-card active" data-style="aero" data-name="Aero Turbofan Carbon" data-price="28000">
+                <div class="card-preview-thumb">🌪️</div>
+                <div class="card-title">Aero Turbofan</div>
+                <div class="card-desc">Carbon Flow Blades</div>
+              </div>
+              <div class="card-select-item wheel-style-card" data-style="split" data-name="Forged Split 5-Spoke" data-price="22000">
+                <div class="card-preview-thumb">⚡</div>
+                <div class="card-title">Split 5-Spoke</div>
+                <div class="card-desc">Monoblock Forged</div>
+              </div>
+              <div class="card-select-item wheel-style-card" data-style="mesh" data-name="GT Motorsport Mesh" data-price="25000">
+                <div class="card-preview-thumb">🏁</div>
+                <div class="card-title">GT Motorsport Mesh</div>
+                <div class="card-desc">Cross-Wire Honeycomb</div>
+              </div>
+              <div class="card-select-item wheel-style-card" data-style="track" data-name="Track 10-Spoke Ultra" data-price="26000">
+                <div class="card-preview-thumb">🏆</div>
+                <div class="card-title">Track 10-Spoke</div>
+                <div class="card-desc">Ultra-Lightweight</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rim Finishes -->
+          <div class="section-block">
+            <div class="section-label">Rim Alloy Finish</div>
+            <div class="swatch-grid">
+              <div class="swatch-item rim-finish-swatch active" style="background: #141416;" data-finish="obsidian" data-name="Gloss Obsidian" title="Gloss Obsidian"></div>
+              <div class="swatch-item rim-finish-swatch" style="background: #7a8089;" data-finish="titanium" data-name="Brushed Titanium" title="Brushed Titanium"></div>
+              <div class="swatch-item rim-finish-swatch" style="background: #d4af37;" data-finish="gold" data-name="Champagne Gold" title="Champagne Gold"></div>
+              <div class="swatch-item rim-finish-swatch" style="background: #f0f0f0;" data-finish="chrome" data-name="Silver Chrome" title="Silver Chrome"></div>
+              <div class="swatch-item rim-finish-swatch" style="background: #8c6239;" data-finish="bronze" data-name="Satin Bronze" title="Satin Bronze"></div>
+            </div>
+          </div>
+
+          <!-- Brembo Brake Caliper Colors -->
+          <div class="section-block">
+            <div class="section-label">Brembo 6-Piston Calipers</div>
+            <div class="swatch-grid">
+              <div class="swatch-item caliper-swatch active" style="background: #ff2233;" data-color="#ff2233" data-name="Brembo Racing Red" data-price="4500" title="Brembo Red"></div>
+              <div class="swatch-item caliper-swatch" style="background: #ccff00;" data-color="#ccff00" data-name="Acid Neon Green" data-price="5500" title="Acid Neon Green"></div>
+              <div class="swatch-item caliper-swatch" style="background: #ffd000;" data-color="#ffd000" data-name="Speed Yellow" data-price="4800" title="Speed Yellow"></div>
+              <div class="swatch-item caliper-swatch" style="background: #00d4ff;" data-color="#00d4ff" data-name="Electric Blue" data-price="5200" title="Electric Blue"></div>
+              <div class="swatch-item caliper-swatch" style="background: #d4af37;" data-color="#d4af37" data-name="Gold Ceramic" data-price="6200" title="Gold Ceramic"></div>
+              <div class="swatch-item caliper-swatch" style="background: #111111;" data-color="#111111" data-name="Obsidian Black" data-price="3500" title="Gloss Black"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. INTERIOR TAB -->
+        <div class="tab-pane" id="tab-interior" style="display: none; flex-direction: column; gap: 20px;">
+          <!-- Leather / Alcantara Colors -->
+          <div class="section-block">
+            <div class="section-label">Cockpit Upholstery</div>
+            <div class="swatch-grid">
+              <div class="swatch-item leather-swatch active" style="background: #15161a;" data-color="#15161a" data-name="Obsidian Nappa Leather" data-alcantara="false" title="Obsidian Nappa"></div>
+              <div class="swatch-item leather-swatch" style="background: #965328;" data-color="#965328" data-name="Cognac Saddle Leather" data-alcantara="false" title="Cognac Saddle"></div>
+              <div class="swatch-item leather-swatch" style="background: #8b0000;" data-color="#8b0000" data-name="Carmine Sport Alcantara" data-alcantara="true" title="Carmine Alcantara"></div>
+              <div class="swatch-item leather-swatch" style="background: #e8e8e8;" data-color="#e8e8e8" data-name="Arctic White Semi-Aniline" data-alcantara="false" title="Arctic White"></div>
+              <div class="swatch-item leather-swatch" style="background: #1e293b;" data-color="#1e293b" data-name="Midnight Navy Alcantara" data-alcantara="true" title="Midnight Navy"></div>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-label">Cockpit Features</div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-name">Driver POV Camera</span>
+                <span class="toggle-desc">Telemetric Virtual Dashboard</span>
+              </div>
+              <button class="btn-secondary" onclick="document.querySelector('[data-view=cockpit]').click()">Enter Cockpit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. DOORS & LIGHTING ANIMATIONS TAB -->
+        <div class="tab-pane" id="tab-doors" style="display: none; flex-direction: column; gap: 16px;">
+          <!-- Dihedral Doors -->
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-name">Left Dihedral Scissor Door</span>
+              <span class="toggle-desc">Smooth compound upward swing</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-door-left" />
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-name">Right Dihedral Scissor Door</span>
+              <span class="toggle-desc">Smooth compound upward swing</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-door-right" />
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <!-- Engine Bay Hood -->
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-name">Twin-Turbo Engine Hood</span>
+              <span class="toggle-desc">Inspect V8 engine & turbochargers</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-hood" />
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <!-- Active Aero Spoiler -->
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-name">Active Rear Aero Wing</span>
+              <span class="toggle-desc">Track Downforce vs Aero Cruise</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-spoiler" />
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <!-- Headlights -->
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-name">Laser Headlights & Volumetrics</span>
+              <span class="toggle-desc">High-beam ground projection</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-headlights" />
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <!-- Underglow Neon -->
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-name">RGB Neon Underglow</span>
+              <span class="toggle-desc">Chassis ground glow</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-underglow" />
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <!-- Underglow Color Swatches -->
+          <div class="section-block">
+            <div class="section-label">Underglow LED Color</div>
+            <div class="swatch-grid">
+              <div class="swatch-item underglow-swatch active" style="background: #00e5ff;" data-color="#00e5ff" title="Cyan"></div>
+              <div class="swatch-item underglow-swatch" style="background: #ff0055;" data-color="#ff0055" title="Hot Pink"></div>
+              <div class="swatch-item underglow-swatch" style="background: #7928ca;" data-color="#7928ca" title="Purple"></div>
+              <div class="swatch-item underglow-swatch" style="background: #00ff66;" data-color="#00ff66" title="Lime"></div>
+              <div class="swatch-item underglow-swatch" style="background: #ffaa00;" data-color="#ffaa00" title="Amber"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. STUDIO & ENVIRONMENTS TAB -->
+        <div class="tab-pane" id="tab-studio" style="display: none; flex-direction: column; gap: 20px;">
+          <div class="section-block">
+            <div class="section-label">Lighting Environment</div>
+            <div class="card-grid">
+              <div class="card-select-item env-card active" data-env="studio" data-name="Luxury Dark Studio">
+                <div class="card-title">Dark Studio</div>
+                <div class="card-desc">Reflective Showroom</div>
+              </div>
+              <div class="card-select-item env-card" data-env="cyberpunk" data-name="Cyberpunk Garage">
+                <div class="card-title">Cyber Garage</div>
+                <div class="card-desc">Neon Cyan & Magenta</div>
+              </div>
+              <div class="card-select-item env-card" data-env="sunset" data-name="Golden Hour Track">
+                <div class="card-title">Sunset Vista</div>
+                <div class="card-desc">Warm Golden Rim</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-label">Turntable Speed</div>
+            <input type="range" id="slider-turntable" class="custom-range" min="0.2" max="3.0" step="0.2" value="1.0" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="drawer-footer">
+        <button class="btn-primary" id="place-order-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Reserve Build
+        </button>
+        <button class="btn-secondary" id="copy-code-btn" title="Copy Build Code">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Share
+        </button>
+      </div>
+    </aside>
+
+    <!-- Modals -->
+    <!-- Photo Studio Modal -->
+    <div class="modal-overlay" id="photo-modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+            Studio Photo Studio // 4K Render
+          </div>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="photo-preview-wrap">
+            <img id="photo-preview-img" class="photo-preview-img" src="" alt="APEX Hypercar Render" />
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <button class="btn-primary" id="capture-now-btn" style="flex: 1;">Download 4K Snapshot</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Build Summary Modal -->
+    <div class="modal-overlay" id="summary-modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+            Bespoke Specification & Window Sticker
+          </div>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <table class="price-table">
+            <tbody id="summary-table-body">
+              <!-- Dynamically Populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Designer Credits Badge -->
+    <div class="designer-badge">
+      <span class="designer-label">Designed & Engineered by</span>
+      <span class="designer-name">S. RITISH</span>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+  </div>
+
+  <!-- Application Bootstrap -->
+</body>
+</html>

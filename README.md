@@ -61,3 +61,79 @@
 ---
 
 ## 💻 Tech Stack
+
+<div align="center">
+
+  <table>
+    <tr>
+      <td align="center" width="33%">
+        <img src="https://techstack-generator.vercel.app/threejs-icon.svg" width="48" height="48" alt="Three.js" /><br/>
+        <b>3D WebGL Engine</b><br/>
+        <sub>Three.js (PCF Shadows & Metallic Shaders)</sub>
+      </td>
+      <td align="center" width="33%">
+        <img src="https://raw.githubusercontent.com/dehash/svg-logos/master/svg/greensock.svg" width="48" height="48" alt="GSAP" /><br/>
+        <b>Animation Matrix</b><br/>
+        <sub>GSAP Orbital Camera Interpolation</sub>
+      </td>
+      <td align="center" width="33%">
+        <img src="https://vitejs.dev/logo.svg" width="48" height="48" alt="Vite" /><br/>
+        <b>Build System</b><br/>
+        <sub>Vite Ultra-Fast Bundler</sub>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" width="33%">
+        <img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/html/html.png" width="48" height="48" alt="WebAudio" /><br/>
+        <b>Spatial Sound Engine</b><br/>
+        <sub>HTML5 Procedural WebAudio Synth</sub>
+      </td>
+      <td align="center" width="33%">
+        <img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/css/css.png" width="48" height="48" alt="Glassmorphism" /><br/>
+        <b>Interactive UI</b><br/>
+        <sub>CSS Glassmorphism & Themes</sub>
+      </td>
+      <td align="center" width="33%">
+        <img src="https://user-images.githubusercontent.com/23264/106598434-9e719e00-654f-11eb-9e59-6167043cfa01.png" width="48" height="48" alt="Cloudflare" /><br/>
+        <b>Cloud Infrastructure</b><br/>
+        <sub>Cloudflare Pages Workers Platform</sub>
+      </td>
+    </tr>
+  </table>
+
+</div>
+
+<br/>
+
+### 🔄 System Architecture Flow
+
+[ User Interaction ] ──► [ ConfiguratorUI.js ] ──► [ SoundFX.js (WebAudio Engine) ]
+│
+▼
+[ SceneManager.js (GSAP) ]
+│
+▼
+[ CarModel.js & Materials.js ] ──► [ 3D WebGL Canvas ]
+
+
+## 🚀 Getting Started
+
+### Prerequisites
+Ensure you have **Node.js** (v16.0 or higher) installed on your system.
+
+### Local Installation & Development
+
+1. **Clone the Repository:**
+   ```bash
+   git clone [https://github.com/ritish-5a/CARZ-3D.git](https://github.com/ritish-5a/CARZ-3D.git)
+   cd CARZ-3D
+
+
+  👤 Author & Credits
+Designed, Engineered & Developed by S. RITISH
+
+🎓 Institution: Presidency University, Bengaluru
+
+💻 GitHub Profile: @ritish-5a
+
+🌐 Live Web Application: APEX GT 3D Configurator

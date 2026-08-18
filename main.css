@@ -1,4 +1,4 @@
-/* Color Theme Definitions */
+/* LIGHT & DARK THEME VARIABLES */
 :root {
   --bg-main: #0a0a0c;
   --panel-bg: rgba(18, 18, 24, 0.75);
@@ -20,12 +20,10 @@
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
-  margin: 0;
-  overflow: hidden;
 }
 
-/* Prevent Top Camera Menu from hiding behind Right Sidebar */
-.camera-bar, .top-nav {
+/* UI OVERLAPPING & RESPONSIVE FIXES */
+.camera-bar, .top-nav, #camera-controls {
   position: absolute;
   top: 20px;
   left: 50%;
@@ -39,8 +37,7 @@ body {
   white-space: nowrap;
 }
 
-/* Elevate Bottom Bar so it doesn't collide with the Credit Badge */
-.bottom-bar {
+.bottom-bar, #action-controls {
   position: absolute;
   bottom: 60px;
   left: 20px;
@@ -53,7 +50,6 @@ body {
   white-space: nowrap;
 }
 
-/* Styling for Theme Button */
 .theme-toggle-btn {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid var(--panel-border);

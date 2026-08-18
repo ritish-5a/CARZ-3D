@@ -108,10 +108,8 @@ npm run build
 
 ## 👤 Author & Credits
 
-Designed, Engineered & Developed by **S. RITISH**
+Designed, Engineered & Developed by **[S. RITISH](https://carz-3d.ritishacc.workers.dev/)**
 
 * 🎓 **Institution:** Presidency University, Bengaluru
-* 💻 **GitHub Profile:** [@ritish-5a](https://www.google.com/search?q=https://github.com/ritish-5a)
-* 🌐 **Live Web Application:** [APEX GT 3D Configurator](https://www.google.com/search?q=https://carz-3d.ritishacc.workers.dev/)
-
----
+* 💻 **GitHub Profile:** [@ritish-5a](https://github.com/ritish-5a)
+* 🌐 **Live Web Application:** [APEX GT 3D Configurator](https://carz-3d.ritishacc.workers.dev/)

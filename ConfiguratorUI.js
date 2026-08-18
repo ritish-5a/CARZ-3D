@@ -38,383 +38,467 @@ export class ConfiguratorUI {
         brand: 'MARUTI SUZUKI',
         model: 'Swift Sport Boosterjet',
         country: '🇮🇳 India / Japan',
-        basePriceINR: 950000,
-        basePriceUSD: 11500,
-        defaultColor: '#d90429',
-        paintCategory: 'gloss'
+        basePriceINR: 980000,
+        basePriceUSD: 11800,
+        defaultColor: '#ff334b',
+        paintCategory: 'metallic'
       },
       'mg': {
         brand: 'MG (MORRIS GARAGES)',
-        model: 'Cyberster EV Roadster',
-        country: '🇬🇧 UK / China',
+        model: 'Cyberster Electric Roadster',
+        country: '🇬🇧 Morris Garages',
         basePriceINR: 6500000,
         basePriceUSD: 78000,
-        defaultColor: '#00e5ff',
-        paintCategory: 'metallic'
+        defaultColor: '#ffd000',
+        paintCategory: 'chameleon'
       },
       'mahindra': {
         brand: 'MAHINDRA',
-        model: 'Thar 4x4 Rugged Trail Edition',
+        model: 'Thar 4x4 Rugged Trail',
         country: '🇮🇳 India',
-        basePriceINR: 1750000,
-        basePriceUSD: 21000,
-        defaultColor: '#2b2d42',
+        basePriceINR: 1850000,
+        basePriceUSD: 22200,
+        defaultColor: '#1b4332',
         paintCategory: 'matte'
       },
       'lamborghini': {
         brand: 'LAMBORGHINI',
-        model: 'Apex GT V12 Hypercar',
+        model: 'Apex GT Hypercar',
         country: '🇮🇹 Italy',
-        basePriceINR: 88900000,
-        basePriceUSD: 1070000,
-        defaultColor: '#ff334b',
+        basePriceINR: 41800000,
+        basePriceUSD: 500000,
+        defaultColor: '#ff5722',
         paintCategory: 'metallic'
       }
     };
 
-    // Configuration Options Pricing
+    this.currentVehicleKey = 'toyota';
+
     this.config = {
-      paint: { color: '#ff334b', category: 'metallic', priceINR: 250000, priceUSD: 3000 },
-      wheels: { style: 'forged', priceINR: 450000, priceUSD: 5500 },
-      calipers: { color: '#ff334b', priceINR: 120000, priceUSD: 1500 },
-      interior: { theme: 'black', priceINR: 380000, priceUSD: 4600 },
-      tint: { type: 'clear', priceINR: 0, priceUSD: 0 }
+      paint: {
+        category: 'metallic',
+        color: '#f8fafc',
+        name: 'Platinum White Pearl',
+        priceINR: 45000,
+        priceUSD: 550,
+        clearcoat: 1.0,
+        metalness: 0.85,
+        roughness: 0.2
+      },
+      wheels: {
+        style: 'aero',
+        styleName: 'Diamond-Cut Sport Alloy',
+        finish: 'obsidian',
+        priceINR: 65000,
+        priceUSD: 800
+      },
+      calipers: {
+        color: '#ff2233',
+        name: 'Sport Red Calipers',
+        priceINR: 15000,
+        priceUSD: 180
+      },
+      interior: {
+        leather: '#15161a',
+        name: 'Obsidian Nappa Leather',
+        isAlcantara: false,
+        priceINR: 45000,
+        priceUSD: 550
+      },
+      glass: {
+        tint: 'clear',
+        name: 'Ultra-Clear Crystal',
+        priceINR: 0,
+        priceUSD: 0
+      },
+      lighting: {
+        headlights: false,
+        underglow: false,
+        underglowColor: '#00e5ff',
+        priceINR: 25000,
+        priceUSD: 300
+      }
     };
 
-    this.dom = {};
-    this.initDOMHandles();
+    this.activeTab = 'garage';
+    this.initDOM();
     this.bindEvents();
-    this.initThemeToggle();
-    this.updatePriceDisplay();
+    this.updatePrice();
     this.startTachometerLoop();
   }
 
-  initDOMHandles() {
-    this.dom.brandTitle = document.querySelector('.brand-title');
-    this.dom.brandModel = document.querySelector('.brand-model');
-    this.dom.brandSelector = document.getElementById('vehicle-select') || document.querySelector('.vehicle-select');
-    this.dom.priceDisplayINR = document.querySelector('.price-inr');
-    this.dom.priceDisplayUSD = document.querySelector('.price-usd');
-    this.dom.currencyToggleBtn = document.getElementById('currency-toggle');
-    
-    // Controls
-    this.dom.paintSwatches = document.querySelectorAll('.paint-swatch');
-    this.dom.wheelBtns = document.querySelectorAll('.wheel-opt-btn');
-    this.dom.caliperSwatches = document.querySelectorAll('.caliper-swatch');
-    this.dom.interiorBtns = document.querySelectorAll('.interior-opt-btn');
-    this.dom.envBtns = document.querySelectorAll('.env-btn');
-    this.dom.camBtns = document.querySelectorAll('.cam-btn');
-
-    // Interactive Car Toggles
-    this.dom.doorBtn = document.getElementById('toggle-doors');
-    this.dom.hoodBtn = document.getElementById('toggle-hood');
-    this.dom.tailgateBtn = document.getElementById('toggle-tailgate');
-    this.dom.airBtn = document.getElementById('toggle-suspension');
-    this.dom.spoilerBtn = document.getElementById('toggle-spoiler');
-    this.dom.headlightBtn = document.getElementById('toggle-headlights');
-
-    // Audio HUD
-    this.dom.engineStartBtn = document.getElementById('engine-start-btn');
-    this.dom.revBtn = document.getElementById('rev-engine-btn');
-    this.dom.rpmVal = document.getElementById('rpm-value');
-    this.dom.rpmBar = document.getElementById('rpm-bar-fill');
-    this.dom.boostVal = document.getElementById('boost-value');
-
-    // Modals & UI Output
-    this.dom.captureBtn = document.getElementById('capture-btn');
-    this.dom.summaryBtn = document.getElementById('summary-btn');
-    this.dom.summaryModal = document.getElementById('summary-modal');
-    this.dom.modalCloseBtn = document.querySelector('.modal-close-btn');
-    this.dom.summaryTableBody = document.getElementById('summary-table-body');
-    this.dom.toastContainer = document.getElementById('toast-container');
-  }
-
-  // Complete Theme Toggle System (Light & Dark Mode)
-  initThemeToggle() {
-    const savedTheme = localStorage.getItem('app-theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-
-    const topNav = document.querySelector('.camera-dock') || 
-                   document.querySelector('.camera-bar') || 
-                   document.querySelector('.top-header') || 
-                   document.body;
-
-    const themeBtn = document.createElement('button');
-    themeBtn.className = 'cam-btn theme-toggle-btn';
-    themeBtn.id = 'theme-toggle';
-    themeBtn.style.marginLeft = 'auto';
-    themeBtn.innerHTML = savedTheme === 'dark' ? '☀️ Light' : '🌙 Dark';
-
-    themeBtn.addEventListener('click', () => {
-      soundFX.playClick();
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('app-theme', newTheme);
-      themeBtn.innerHTML = newTheme === 'dark' ? '☀️ Light' : '🌙 Dark';
-
-      if (this.sceneManager && typeof this.sceneManager.updateThemeBackground === 'function') {
-        this.sceneManager.updateThemeBackground(newTheme);
-      }
-    });
-
-    if (topNav) {
-      topNav.appendChild(themeBtn);
-    }
+  initDOM() {
+    this.dom = {
+      priceBadge: document.getElementById('price-val-badge'),
+      brandTitle: document.getElementById('brand-title-text'),
+      brandModel: document.getElementById('brand-model-text'),
+      currencyBtn: document.getElementById('currency-toggle-btn'),
+      tabBtns: document.querySelectorAll('.tab-btn'),
+      tabPanes: document.querySelectorAll('.tab-pane'),
+      camBtns: document.querySelectorAll('.cam-btn'),
+      pedalBtn: document.getElementById('pedal-rev-btn'),
+      rpmVal: document.getElementById('tacho-rpm-val'),
+      rpmBar: document.getElementById('rpm-fill-bar'),
+      boostVal: document.getElementById('tacho-boost-val'),
+      soundToggle: document.getElementById('sound-toggle-btn'),
+      photoModal: document.getElementById('photo-modal'),
+      summaryModal: document.getElementById('summary-modal'),
+      photoPreview: document.getElementById('photo-preview-img'),
+      toastContainer: document.getElementById('toast-container')
+    };
   }
 
   bindEvents() {
-    // Brand Selection
-    if (this.dom.brandSelector) {
-      this.dom.brandSelector.addEventListener('change', (e) => {
-        const brandKey = e.target.value;
-        this.switchVehicleBrand(brandKey);
-      });
-    }
-
-    // Vehicle Select Buttons (Alternative UI layout)
-    document.querySelectorAll('.vehicle-card-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const brandKey = btn.dataset.brand;
-        this.switchVehicleBrand(brandKey);
-      });
-    });
-
-    // Paint Selection
-    this.dom.paintSwatches.forEach(swatch => {
-      swatch.addEventListener('click', () => {
-        const hex = swatch.dataset.color;
-        const cat = swatch.dataset.category || 'metallic';
-        this.config.paint.color = hex;
-        this.config.paint.category = cat;
-        matManager.setPaintColor(hex, cat);
+    // 1. Vehicle Selector (Garage)
+    document.querySelectorAll('.vehicle-card').forEach(card => {
+      card.addEventListener('click', () => {
         soundFX.playClick();
+        document.querySelectorAll('.vehicle-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
 
-        this.dom.paintSwatches.forEach(s => s.classList.remove('active'));
-        swatch.classList.add('active');
-        this.showToast(`Paint finish updated: ${cat.toUpperCase()}`);
+        const key = card.dataset.vehicle;
+        this.selectVehicle(key);
       });
     });
 
-    // Wheel Selection
-    this.dom.wheelBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const style = btn.dataset.wheelStyle;
-        this.config.wheels.style = style;
-        this.car.switchWheelStyle(style);
+    // 2. Currency Switcher (INR <-> USD)
+    if (this.dom.currencyBtn) {
+      this.dom.currencyBtn.addEventListener('click', () => {
         soundFX.playClick();
-
-        this.dom.wheelBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-
-    // Caliper Color
-    this.dom.caliperSwatches.forEach(swatch => {
-      swatch.addEventListener('click', () => {
-        const hex = swatch.dataset.color;
-        this.config.calipers.color = hex;
-        matManager.setCaliperColor(hex);
-        soundFX.playClick();
-
-        this.dom.caliperSwatches.forEach(s => s.classList.remove('active'));
-        swatch.classList.add('active');
-      });
-    });
-
-    // Interior Theme
-    this.dom.interiorBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const theme = btn.dataset.interiorTheme;
-        this.config.interior.theme = theme;
-        matManager.setInteriorTheme(theme);
-        soundFX.playClick();
-
-        this.dom.interiorBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-
-    // Environments
-    this.dom.envBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const env = btn.dataset.env;
-        this.sceneManager.setEnvironment(env);
-        soundFX.playClick();
-
-        this.dom.envBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-
-    // Camera Presets
-    this.dom.camBtns.forEach(btn => {
-      if (btn.id === 'theme-toggle') return;
-      btn.addEventListener('click', () => {
-        const camPreset = btn.dataset.cam;
-        this.sceneManager.setCameraPreset(camPreset);
-        soundFX.playClick();
-
-        this.dom.camBtns.forEach(b => {
-          if (b.id !== 'theme-toggle') b.classList.remove('active');
-        });
-        btn.classList.add('active');
-      });
-    });
-
-    // Interactive Car Features
-    if (this.dom.doorBtn) {
-      this.dom.doorBtn.addEventListener('click', () => {
-        const state = this.car.toggleDoors();
-        this.dom.doorBtn.classList.toggle('active', state);
-        this.showToast(state ? 'Dihedral Doors Opened' : 'Dihedral Doors Sealed');
-      });
-    }
-
-    if (this.dom.hoodBtn) {
-      this.dom.hoodBtn.addEventListener('click', () => {
-        const state = this.car.toggleHood();
-        this.dom.hoodBtn.classList.toggle('active', state);
-        this.showToast(state ? 'Engine Bonnet Lifted' : 'Engine Bonnet Closed');
-      });
-    }
-
-    if (this.dom.tailgateBtn) {
-      this.dom.tailgateBtn.addEventListener('click', () => {
-        const state = this.car.toggleTailgate();
-        this.dom.tailgateBtn.classList.toggle('active', state);
-      });
-    }
-
-    if (this.dom.airBtn) {
-      this.dom.airBtn.addEventListener('click', () => {
-        const state = this.car.toggleSuspension();
-        this.dom.airBtn.classList.toggle('active', state);
-        this.showToast(state ? 'Air Suspension: Lifted (+40mm)' : 'Air Suspension: Track Low');
-      });
-    }
-
-    if (this.dom.spoilerBtn) {
-      this.dom.spoilerBtn.addEventListener('click', () => {
-        const state = this.car.toggleSpoiler();
-        this.dom.spoilerBtn.classList.toggle('active', state);
-        this.showToast(state ? 'Active Aero: Track Spoiler Deployed' : 'Active Aero: Retracted');
-      });
-    }
-
-    if (this.dom.headlightBtn) {
-      this.dom.headlightBtn.addEventListener('click', () => {
-        const state = this.car.toggleHeadlights();
-        this.dom.headlightBtn.classList.toggle('active', state);
-      });
-    }
-
-    // Sound FX Controls
-    if (this.dom.engineStartBtn) {
-      this.dom.engineStartBtn.addEventListener('click', () => {
-        const active = soundFX.toggleEngine();
-        this.dom.engineStartBtn.classList.toggle('active', active);
-        this.dom.engineStartBtn.textContent = active ? 'STOP ENGINE' : 'START ENGINE';
-        this.showToast(active ? 'V12 Powertrain Ignited' : 'Powertrain Shut Down');
-      });
-    }
-
-    if (this.dom.revBtn) {
-      this.dom.revBtn.addEventListener('mousedown', () => soundFX.startRevving());
-      this.dom.revBtn.addEventListener('mouseup', () => soundFX.stopRevving());
-      this.dom.revBtn.addEventListener('mouseleave', () => soundFX.stopRevving());
-      this.dom.revBtn.addEventListener('touchstart', (e) => { e.preventDefault(); soundFX.startRevving(); });
-      this.dom.revBtn.addEventListener('touchend', () => soundFX.stopRevving());
-    }
-
-    // Currency Toggle
-    if (this.dom.currencyToggleBtn) {
-      this.dom.currencyToggleBtn.addEventListener('click', () => {
         this.currency = this.currency === 'INR' ? 'USD' : 'INR';
-        this.dom.currencyToggleBtn.textContent = this.currency;
-        this.updatePriceDisplay();
-        soundFX.playClick();
+        this.dom.currencyBtn.textContent = this.currency === 'INR' ? '₹ INR' : '$ USD';
+        this.updatePrice();
+        this.showToast(`Currency set to ${this.currency}`);
       });
     }
 
-    // Modal & Screenshot Actions
-    if (this.dom.captureBtn) {
-      this.dom.captureBtn.addEventListener('click', () => {
+    // 3. Tab Navigation
+    this.dom.tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
         soundFX.playClick();
-        confetti({ particleCount: 80, spread: 60, origin: { y: 0.8 } });
-        const dataUrl = this.sceneManager.captureScreenshot();
+        this.switchTab(btn.dataset.tab);
+      });
+    });
+
+    // 4. Camera Controls & Cinematic Showcase
+    this.dom.camBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        soundFX.playClick();
+        this.dom.camBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const view = btn.dataset.view;
+        if (view === 'showcase') {
+          const active = this.sceneManager.toggleCinematicShowcase();
+          btn.classList.toggle('active', active);
+          this.showToast(active ? "Cinematic Drone Showcase Active" : "Showcase Paused");
+        } else {
+          this.sceneManager.setCameraView(view);
+        }
+      });
+    });
+
+    // 5. Quick Docks & 3D Interactive Animation Controls
+    const quickDoorBtn = document.getElementById('quick-doors-btn');
+    if (quickDoorBtn) {
+      quickDoorBtn.addEventListener('click', () => {
+        const open = this.car.toggleDoors();
+        quickDoorBtn.classList.toggle('active', open);
+        this.showToast(open ? "Doors Opened" : "Doors Closed");
+      });
+    }
+
+    const quickHoodBtn = document.getElementById('quick-hood-btn');
+    if (quickHoodBtn) {
+      quickHoodBtn.addEventListener('click', () => {
+        const open = this.car.toggleHood();
+        quickHoodBtn.classList.toggle('active', open);
+        this.showToast(open ? "Engine Bay Hood Opened" : "Engine Hood Closed");
+      });
+    }
+
+    const quickSuspensionBtn = document.getElementById('quick-suspension-btn');
+    if (quickSuspensionBtn) {
+      quickSuspensionBtn.addEventListener('click', () => {
+        const raised = this.car.toggleSuspension();
+        quickSuspensionBtn.classList.toggle('active', raised);
+        this.showToast(raised ? "Off-Road Air Suspension Raised (+180mm)" : "Track Slammed Ride Height");
+      });
+    }
+
+    const quickHazardBtn = document.getElementById('quick-hazard-btn');
+    if (quickHazardBtn) {
+      quickHazardBtn.addEventListener('click', () => {
+        const flashing = this.car.toggleHazardLights();
+        quickHazardBtn.classList.toggle('active', flashing);
+        this.showToast(flashing ? "Hazard Flashers Active" : "Hazards Off");
+      });
+    }
+
+    const quickLightsBtn = document.getElementById('quick-lights-btn');
+    if (quickLightsBtn) {
+      quickLightsBtn.addEventListener('click', () => {
+        const on = this.car.toggleHeadlights();
+        quickLightsBtn.classList.toggle('active', on);
+        this.showToast(on ? "Projector Headlights Activated" : "Headlights Off");
+      });
+    }
+
+    const quickRotateBtn = document.getElementById('quick-rotate-btn');
+    if (quickRotateBtn) {
+      quickRotateBtn.addEventListener('click', () => {
+        const rotating = this.sceneManager.toggleAutoRotate();
+        quickRotateBtn.classList.toggle('active', rotating);
+        this.showToast(rotating ? "Turntable Enabled" : "Turntable Paused");
+      });
+    }
+
+    // 6. Sound Toggle
+    if (this.dom.soundToggle) {
+      this.dom.soundToggle.addEventListener('click', () => {
+        const muted = soundFX.toggleMute();
+        this.dom.soundToggle.classList.toggle('active', !muted);
+        this.showToast(muted ? "Audio Muted" : "Engine Audio On");
+      });
+    }
+
+    // 7. Rev Pedal
+    if (this.dom.pedalBtn) {
+      const startRev = (e) => {
+        e.preventDefault();
+        this.dom.pedalBtn.classList.add('revving');
+        soundFX.setRevving(true);
+      };
+      const stopRev = (e) => {
+        e.preventDefault();
+        this.dom.pedalBtn.classList.remove('revving');
+        soundFX.setRevving(false);
+      };
+      this.dom.pedalBtn.addEventListener('mousedown', startRev);
+      window.addEventListener('mouseup', stopRev);
+      this.dom.pedalBtn.addEventListener('touchstart', startRev);
+      window.addEventListener('touchend', stopRev);
+    }
+
+    // 8. Paint Swatches
+    document.querySelectorAll('.paint-swatch').forEach(swatch => {
+      swatch.addEventListener('click', () => {
+        soundFX.playClick();
+        document.querySelectorAll('.paint-swatch').forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+
+        const color = swatch.dataset.color;
+        const name = swatch.dataset.name;
+        this.config.paint.color = color;
+        this.config.paint.name = name;
+
+        matManager.setPaint({
+          color: color,
+          type: this.config.paint.category,
+          clearcoat: this.config.paint.clearcoat,
+          metalness: this.config.paint.metalness,
+          roughness: this.config.paint.roughness
+        });
+
+        const hexInput = document.getElementById('custom-paint-hex');
+        if (hexInput) hexInput.value = color;
+
+        this.updatePrice();
+        this.showToast(`Paint: ${name}`);
+      });
+    });
+
+    // Custom Paint
+    const hexInput = document.getElementById('custom-paint-hex');
+    const colorPicker = document.getElementById('custom-paint-picker');
+    if (hexInput && colorPicker) {
+      const applyColor = (val) => {
+        this.config.paint.color = val;
+        this.config.paint.name = "Bespoke Custom Blend";
+        matManager.setPaint({
+          color: val,
+          type: this.config.paint.category,
+          clearcoat: this.config.paint.clearcoat,
+          metalness: this.config.paint.metalness,
+          roughness: this.config.paint.roughness
+        });
+      };
+      colorPicker.addEventListener('input', (e) => {
+        hexInput.value = e.target.value;
+        applyColor(e.target.value);
+      });
+      hexInput.addEventListener('change', (e) => {
+        colorPicker.value = e.target.value;
+        applyColor(e.target.value);
+      });
+    }
+
+    // Finish Type
+    document.querySelectorAll('.finish-segment-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        soundFX.playClick();
+        document.querySelectorAll('.finish-segment-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const finish = btn.dataset.finish;
+        this.config.paint.category = finish;
+        matManager.setPaint({
+          color: this.config.paint.color,
+          type: finish,
+          clearcoat: this.config.paint.clearcoat,
+          metalness: this.config.paint.metalness,
+          roughness: this.config.paint.roughness
+        });
+      });
+    });
+
+    // Wheels, Interior, Lighting events
+    document.querySelectorAll('.rim-finish-swatch').forEach(swatch => {
+      swatch.addEventListener('click', () => {
+        soundFX.playClick();
+        document.querySelectorAll('.rim-finish-swatch').forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+        matManager.setRimFinish(swatch.dataset.finish);
+      });
+    });
+
+    document.querySelectorAll('.caliper-swatch').forEach(swatch => {
+      swatch.addEventListener('click', () => {
+        soundFX.playClick();
+        document.querySelectorAll('.caliper-swatch').forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+        matManager.setCaliperColor(swatch.dataset.color);
+      });
+    });
+
+    document.querySelectorAll('.leather-swatch').forEach(swatch => {
+      swatch.addEventListener('click', () => {
+        soundFX.playClick();
+        document.querySelectorAll('.leather-swatch').forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+        matManager.setInteriorLeather(swatch.dataset.color, swatch.dataset.alcantara === 'true');
+      });
+    });
+
+    // Photo Studio & Summary
+    const openPhotoBtn = document.getElementById('open-photo-studio-btn');
+    if (openPhotoBtn) {
+      openPhotoBtn.addEventListener('click', () => {
+        soundFX.playClick();
+        const dataUrl = this.sceneManager.captureScreenshot('16:9');
+        if (this.dom.photoPreview) this.dom.photoPreview.src = dataUrl;
+        if (this.dom.photoModal) this.dom.photoModal.classList.add('open');
+      });
+    }
+
+    const capturePhotoBtn = document.getElementById('capture-now-btn');
+    if (capturePhotoBtn) {
+      capturePhotoBtn.addEventListener('click', () => {
+        soundFX.playClick();
+        const dataUrl = this.sceneManager.captureScreenshot('16:9');
         const link = document.createElement('a');
-        link.download = `APEX-GT-${this.car.currentBrand.toUpperCase()}-SPEC.png`;
+        link.download = `${this.vehicles[this.currentVehicleKey].brand}-Custom-${Date.now()}.png`;
         link.href = dataUrl;
         link.click();
-        this.showToast('4K Canvas Snapshot Downloaded!');
+        this.showToast("📸 4K Studio Snapshot Downloaded");
       });
     }
 
-    if (this.dom.summaryBtn) {
-      this.dom.summaryBtn.addEventListener('click', () => {
+    const openSummaryBtn = document.getElementById('open-summary-btn');
+    if (openSummaryBtn) {
+      openSummaryBtn.addEventListener('click', () => {
         soundFX.playClick();
-        this.populateSummaryTable();
-        if (this.dom.summaryModal) this.dom.summaryModal.classList.add('active');
+        this.updatePrice();
+        if (this.dom.summaryModal) this.dom.summaryModal.classList.add('open');
       });
     }
 
-    if (this.dom.modalCloseBtn && this.dom.summaryModal) {
-      this.dom.modalCloseBtn.addEventListener('click', () => {
-        this.dom.summaryModal.classList.remove('active');
+    const orderBtn = document.getElementById('place-order-btn');
+    if (orderBtn) {
+      orderBtn.addEventListener('click', () => {
+        soundFX.playLockChirp();
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+        this.showToast(`🎉 ${this.vehicles[this.currentVehicleKey].brand} Build Reserved for S. RITISH!`);
       });
     }
+
+    // Modal Close
+    document.querySelectorAll('.modal-close-btn, .modal-overlay').forEach(el => {
+      el.addEventListener('click', (e) => {
+        if (e.target === el || el.classList.contains('modal-close-btn')) {
+          soundFX.playClick();
+          document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+        }
+      });
+    });
   }
 
-  switchVehicleBrand(brandKey) {
+  selectVehicle(brandKey) {
     if (!this.vehicles[brandKey]) return;
-    const info = this.vehicles[brandKey];
+    this.currentVehicleKey = brandKey;
+    const v = this.vehicles[brandKey];
 
-    this.car.switchBrand(brandKey);
-    soundFX.setProfile(brandKey);
-    matManager.setPaintColor(info.defaultColor, info.paintCategory);
+    // Switch 3D Model
+    this.car.switchVehicle(brandKey);
 
-    if (this.dom.brandTitle) this.dom.brandTitle.textContent = `${info.brand} `;
-    if (this.dom.brandModel) this.dom.brandModel.textContent = `${info.model} // BY S. RITISH`;
-
-    this.updatePriceDisplay();
-    this.showToast(`Switched to ${info.brand} ${info.model}`);
-  }
-
-  formatCurrency(amountINR, amountUSD) {
-    if (this.currency === 'INR') {
-      return `₹ ${(amountINR / 100000).toFixed(2)} Lakh`;
+    // Update Header
+    if (this.dom.brandTitle) {
+      this.dom.brandTitle.innerHTML = `${v.brand} <span class="brand-tag">S. RITISH</span>`;
     }
-    return `$ ${amountUSD.toLocaleString()}`;
+    if (this.dom.brandModel) {
+      this.dom.brandModel.textContent = `${v.model.toUpperCase()} // ${v.country}`;
+    }
+
+    // Apply Default Paint
+    this.config.paint.color = v.defaultColor;
+    this.config.paint.category = v.paintCategory;
+    matManager.setPaint({
+      color: v.defaultColor,
+      type: v.paintCategory
+    });
+
+    this.updatePrice();
+    this.showToast(`Switched to ${v.brand} - ${v.model}`);
   }
 
-  updatePriceDisplay() {
-    const activeVehicle = this.vehicles[this.car.currentBrand] || this.vehicles['toyota'];
-    const totalINR = activeVehicle.basePriceINR + this.config.paint.priceINR + this.config.wheels.priceINR + this.config.calipers.priceINR + this.config.interior.priceINR;
-    const totalUSD = activeVehicle.basePriceUSD + this.config.paint.priceUSD + this.config.wheels.priceUSD + this.config.calipers.priceUSD + this.config.interior.priceUSD;
-
-    const formatted = this.formatCurrency(totalINR, totalUSD);
-
-    if (this.dom.priceDisplayINR) this.dom.priceDisplayINR.textContent = formatted;
-    if (this.dom.priceDisplayUSD) this.dom.priceDisplayUSD.textContent = formatted;
+  switchTab(tabKey) {
+    this.activeTab = tabKey;
+    this.dom.tabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabKey));
+    this.dom.tabPanes.forEach(pane => {
+      pane.style.display = pane.id === `tab-${tabKey}` ? 'flex' : 'none';
+    });
   }
 
-  populateSummaryTable() {
-    if (!this.dom.summaryTableBody) return;
-    const activeVehicle = this.vehicles[this.car.currentBrand];
-    const totalINR = activeVehicle.basePriceINR + this.config.paint.priceINR + this.config.wheels.priceINR + this.config.calipers.priceINR + this.config.interior.priceINR;
-    const totalUSD = activeVehicle.basePriceUSD + this.config.paint.priceUSD + this.config.wheels.priceUSD + this.config.calipers.priceUSD + this.config.interior.priceUSD;
-    const formatted = this.formatCurrency(totalINR, totalUSD);
+  formatCurrency(inrAmount, usdAmount) {
+    if (this.currency === 'INR') {
+      if (inrAmount >= 10000000) {
+        return `₹ ${(inrAmount / 10000000).toFixed(2)} Cr`;
+      } else {
+        return `₹ ${(inrAmount / 100000).toFixed(2)} Lakh`;
+      }
+    } else {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(usdAmount);
+    }
+  }
 
-    this.dom.summaryTableBody.innerHTML = `
-      <tr><td>Vehicle Chassis & Powertrain</td><td>${activeVehicle.brand} ${activeVehicle.model}</td></tr>
-      <tr><td>Base Factory MSRP</td><td>${this.formatCurrency(activeVehicle.basePriceINR, activeVehicle.basePriceUSD)}</td></tr>
-      <tr><td>Bespoke Exterior Paint</td><td>+${this.formatCurrency(this.config.paint.priceINR, this.config.paint.priceUSD)}</td></tr>
-      <tr><td>Alloy Wheels & Calipers</td><td>+${this.formatCurrency(this.config.wheels.priceINR + this.config.calipers.priceINR, this.config.wheels.priceUSD + this.config.calipers.priceUSD)}</td></tr>
-      <tr><td>Luxury Interior Package</td><td>+${this.formatCurrency(this.config.interior.priceINR, this.config.interior.priceUSD)}</td></tr>
-      <tr class="total-row"><td>Total On-Road Value</td><td>${formatted}</td></tr>
-    `;
+  updatePrice() {
+    const v = this.vehicles[this.currentVehicleKey];
+    const totalINR = v.basePriceINR + this.config.paint.priceINR + this.config.wheels.priceINR + this.config.calipers.priceINR + this.config.interior.priceINR + this.config.lighting.priceINR;
+    const totalUSD = v.basePriceUSD + this.config.paint.priceUSD + this.config.wheels.priceUSD + this.config.calipers.priceUSD + this.config.interior.priceUSD + this.config.lighting.priceUSD;
+
+    const formatted = this.formatCurrency(totalINR, totalUSD);
+    if (this.dom.priceBadge) this.dom.priceBadge.textContent = formatted;
+
+    const tableBody = document.getElementById('summary-table-body');
+    if (tableBody) {
+      tableBody.innerHTML = `
+        <tr><td>Lead Designer & Commissioner</td><td><strong>S. RITISH</strong></td></tr>
+        <tr><td>Brand & Model</td><td><strong>${v.brand} - ${v.model}</strong></td></tr>
+        <tr><td>Base Showroom Price</td><td>${this.formatCurrency(v.basePriceINR, v.basePriceUSD)}</td></tr>
+        <tr><td>Bespoke Exterior Paint</td><td>+${this.formatCurrency(this.config.paint.priceINR, this.config.paint.priceUSD)}</td></tr>
+        <tr><td>Alloy Wheels & Calipers</td><td>+${this.formatCurrency(this.config.wheels.priceINR + this.config.calipers.priceINR, this.config.wheels.priceUSD + this.config.calipers.priceUSD)}</td></tr>
+        <tr><td>Luxury Interior Package</td><td>+${this.formatCurrency(this.config.interior.priceINR, this.config.interior.priceUSD)}</td></tr>
+        <tr class="total-row"><td>Total On-Road Value</td><td>${formatted}</td></tr>
+      `;
+    }
   }
 
   startTachometerLoop() {

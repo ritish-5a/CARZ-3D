@@ -104,27 +104,6 @@ Open your browser and navigate to `http://localhost:5173/`
 npm run build
 
 ```
-
-
-
----
-
-## ☁️ Deployment
-
-### Cloudflare Pages (Manual Direct Upload)
-
-1. Generate the static production files:
-```bash
-npm run build
-
-```
-
-
-2. Navigate to your [Cloudflare Dashboard](https://dash.cloudflare.com/) -> **Workers & Pages**.
-3. Select project **`carz-3d`** -> **Deployments** -> **Create New Deployment**.
-4. Drag and drop all contents inside your local **`dist/`** directory directly into the Cloudflare dashboard uploader.
-5. Click **Save and Deploy**.
-
 ---
 
 ## 👤 Author & Credits

@@ -1,0 +1,66 @@
+/* Color Theme Definitions */
+:root {
+  --bg-main: #0a0a0c;
+  --panel-bg: rgba(18, 18, 24, 0.75);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --text-main: #ffffff;
+  --text-muted: #a0a0b0;
+  --accent-cyan: #00f2fe;
+}
+
+[data-theme="light"] {
+  --bg-main: #f4f5f8;
+  --panel-bg: rgba(255, 255, 255, 0.85);
+  --panel-border: rgba(0, 0, 0, 0.1);
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --accent-cyan: #0284c7;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Prevent Top Camera Menu from hiding behind Right Sidebar */
+.camera-bar, .top-nav {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100vw - 420px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 50;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* Elevate Bottom Bar so it doesn't collide with the Credit Badge */
+.bottom-bar {
+  position: absolute;
+  bottom: 60px;
+  left: 20px;
+  max-width: calc(100vw - 420px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 50;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* Styling for Theme Button */
+.theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--panel-border);
+  color: var(--text-main);
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  flex-shrink: 0;
+}
